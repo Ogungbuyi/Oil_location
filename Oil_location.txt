@@ -1,0 +1,25 @@
+import pandas as pd
+import numpy as np
+import os
+
+os.chdir(r"C:\Users\prime\Dropbox\DESKSTOP")
+
+dd = pd.read_excel("Oil Spill Data_2017.xlsx")
+dd = dd[["Spill_date", "Estimated_quantity", "Latitude", "Longitude"]]
+dd.columns = ["Date", "Quantity", "Latitude", "Longitude"]
+
+
+dd["Date"] = pd.to_datetime(dd.Date);
+dd["Quantity"] = pd.to_numeric(dd.Quantity, 'coerse', 'float')
+dd["Latitude"] = pd.to_numeric(dd.Latitude, 'coerse', 'float')
+dd["Longitude"] = pd.to_numeric(dd.Longitude, 'coerse', 'float')
+
+dd = dd.loc[(4.06717 <= dd.Latitude) & (dd.Latitude <= 6.0945)]
+
+
+dd = dd.dropna(axis=0, how="any")
+dd = dd.drop_duplicates()
+
+writer = pd.ExcelWriter(r"Oil Spill Data_2017z (preprocessed).xlsx", engine='xlsxwriter')
+dd.to_excel(writer)
+writer.save()
